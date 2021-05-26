@@ -1,16 +1,15 @@
 {
   "name": "sora-full-stack-challenge",
+  "private": true,
   "version": "1.0.0",
   "description": "Sora full-stack coding challenge",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "test": "jest --config jest.config.js",
-    "test:integration": "jest --config jest.integrationtests.config.js",
-    "start": "node server.js",
-    "precommit": "echo 'Run & apply on-commit cool linter rules here!'"
+  "workspaces": {
+    "packages": [
+      "client",
+      "server"
+    ]
   },
-  "proxy": "http://localhost:5000/",
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Master-Smiley/sora-full-stack-challenge.git"
@@ -21,12 +20,6 @@
     "url": "https://github.com/Master-Smiley/sora-full-stack-challenge/issues"
   },
   "homepage": "https://github.com/Master-Smiley/sora-full-stack-challenge#readme",
-  "dependencies": {
-    "express": "^4.17.1"
-  },
-  "devDependencies": {
-    "husky": "^4.3.0",
-    "jest": "^27.0.1",
-    "supertest": "^6.1.3"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
