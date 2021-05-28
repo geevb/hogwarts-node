@@ -1,4 +1,6 @@
-export default {
+module.exports = {
+    preset: 'ts-jest',
+    testEnvironment: 'node',
     verbose: true,
-    testMatch: ['<rootDir>/tests/**/*.test.js']
+    testMatch: ['**/tests/**/*.test.ts'],
 };
