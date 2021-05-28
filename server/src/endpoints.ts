@@ -1,67 +1,17 @@
-export function setupEndpoints(application) {
+import { chooseStudentsHelperForSkill } from './control';
+import { NextFunction, Request, Response } from 'express';
+import { Application } from 'app';
+
+export function setupEndpoints(application: Application) {
     const app = application;
 
-    app.express.get('/students', async (req, res) => {
-        const studentId = req.studentId || 3;
-        const skillId = req.skillId || 2;
-        const studentsWithSelectedSkillId = await app.dbProvider.db.any(`
-            SELECT students.id, students.name, students.house, student_skills.skill_id, student_skills.level
-            FROM students
-            JOIN student_skills
-            ON students.id = student_skills.student_id
-            WHERE skill_id = ${skillId};
-        `);
-
-        console.log({studentsWithSelectedSkillId})
-
-        if (!studentsWithSelectedSkillId || studentsWithSelectedSkillId.length === 1) { // Only the loggedInStudent has the selected skill
-            return res.send({ FACULTY: TRUE });
-            // return res.send(getFacultyWithSkill(skillId));
-        }
-
-        const loggedInStudentData = studentsWithSelectedSkillId.find(studentDataAndSkills => { 
-            return studentDataAndSkills.id === studentId;
-        });
-
-        console.log({loggedInStudentData})
-
-        const loggedInStudentHouse = loggedInStudentData.house;
-        const loggedInStudentLevelInSelectedSkill = loggedInStudentData.level;
-
-        const capableStudents = studentsWithSelectedSkillId
-            .filter(student => {
-                return student.id !== studentId && student.level > loggedInStudentLevelInSelectedSkill; 
-            })
-            .sort((a, b) => {
-                /*
-                Sort logic: 
-
-                Sort by level in the specific skill;
-                If skill level is the same, sort by the students house. Students with the same house as the loggedInStudent
-                should be prioritized.
-                */
-
-                const levelSort = b.level - a.level; // Sort level descending
-                if (levelSort) return levelSort;
-
-                const aHouseEqualsStudentHouse = a.house === loggedInStudentHouse;
-                const bHouseEqualsStudentHouse = b.house === loggedInStudentHouse;
-                if (aHouseEqualsStudentHouse === bHouseEqualsStudentHouse) { // Both have (or don't) the loggedInStudent's house
-                    return 0;
-                }
-
-                if (aHouseEqualsStudentHouse) return -1;
-                if (bHouseEqualsStudentHouse) return 1;
-            });
-            
-        if (capableStudents.length) {
-            return res.send(capableStudents[0]);
-        }
-
-        return res.send({ FACULTY: TRUE });
+    app.express.get('/students', async (req: Request, res: Response) => {
+        const studentId = 3;
+        const skillId = 2;
+        return res.send(await chooseStudentsHelperForSkill(app.dbProvider, studentId, skillId));
     });
     
-    app.express.get('/faculty', (req, res) => {
+    app.express.get('/faculty', (req: Request, res: Response) => {
         const faculty = [
             {
                 id: 1,
@@ -77,7 +27,7 @@ export function setupEndpoints(application) {
         res.send(faculty);
     });
   
-    app.express.get('/skills', (req, res) => {
+    app.express.get('/skills', (req: Request, res: Response) => {
         const skills = [
             {
                 id: 1,

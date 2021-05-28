@@ -1,14 +1,15 @@
+import pgpInitializer from 'pg-promise';
 import pgPromise from 'pg-promise';
-import dotenv from 'dotenv';
 
+import dotenv from 'dotenv';
 dotenv.config();
 
 export class PostgresDbConnectionProvider {
-    db
+    db: pgpInitializer.IDatabase<any>;
     constructor() {
         const initOptions = {
             connect() { console.log('Postgres connection initiated') },
-            error(err) {
+            error(err: Error) {
                 console.error('PostgreSQL error', { error: err, callstack: new Error().stack });
             },
         };
@@ -35,9 +36,5 @@ export class PostgresDbConnectionProvider {
 
         const pgp = pgPromise(initOptions);
         this.db = pgp(config);
-    }
-
-    end() {
-        this.db.end();
     }
 }

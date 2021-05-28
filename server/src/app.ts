@@ -1,15 +1,15 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import { setupEndpoints } from './endpoints.js';
-import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider.js'
+import { setupEndpoints } from './endpoints';
+import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider'
 
 export class Application {
     express;
     dbProvider;
-    dbLogger;
-    appLogger;
-    server;
-    httpTerminator;
+    dbLogger: any;
+    appLogger: any;
+    server: any;
+    httpTerminator: any;
 
     constructor() {
         this.dbProvider = new PostgresDbConnectionProvider();

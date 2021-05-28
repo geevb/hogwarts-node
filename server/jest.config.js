@@ -1,5 +1,4 @@
-module.export = {
+export default {
     verbose: true,
-    testMatch: ['<rootDir>/tests/**/*.test.js'],
-    clearMocks: true,
+    testMatch: ['<rootDir>/tests/**/*.test.js']
 };
