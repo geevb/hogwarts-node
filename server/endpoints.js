@@ -1,49 +1,64 @@
 export function setupEndpoints(application) {
     const app = application;
 
-    // All skills not explicitly referenced in the 'skills' property can be
-    // assumed to be 0.
-    app.express.get('/students', (req, res) => {
-        const students = [
-            {
-                id: 1,
-                name: 'Tester',
-                email: 'test@soraschools.com',
-                house: 'Heqet',
-                skills: [
-                    { id: 3, level: 2 },
-                    { id: 4, level: 3 },
-                    { id: 6, level: 1 },
-                ],
-            },
-            {
-                id: 2,
-                name: 'Ludwig Wittgenstein',
-                email: 'inaflyjar@soraschools.com',
-                house: 'Heqet',
-                skills: [
-                    { id: 3, level: 4 },
-                    { id: 4, level: 1 },
-                ],
-            },
-            {
-                id: 3,
-                name: 'Max Stirner',
-                email: 'nothingtome@soraschools.com',
-                house: 'Heqet',
-                skills: [
-                    { id: 1, level: 2 },
-                    { id: 3, level: 3 },
-                    { id: 6, level: 3 },
-                ],
-            }
-        ];
-        res.send(students);
-    });
-  
-    app.express.get('/current-user-id', (req, res) => {
-        const currentUserId = 1; // don't assume this will always be true
-        res.send(currentUserId);
+    app.express.get('/students', async (req, res) => {
+        const studentId = req.studentId || 3;
+        const skillId = req.skillId || 2;
+        const studentsWithSelectedSkillId = await app.dbProvider.db.any(`
+            SELECT students.id, students.name, students.house, student_skills.skill_id, student_skills.level
+            FROM students
+            JOIN student_skills
+            ON students.id = student_skills.student_id
+            WHERE skill_id = ${skillId};
+        `);
+
+        console.log({studentsWithSelectedSkillId})
+
+        if (!studentsWithSelectedSkillId || studentsWithSelectedSkillId.length === 1) { // Only the loggedInStudent has the selected skill
+            return res.send({ FACULTY: TRUE });
+            // return res.send(getFacultyWithSkill(skillId));
+        }
+
+        const loggedInStudentData = studentsWithSelectedSkillId.find(studentDataAndSkills => { 
+            return studentDataAndSkills.id === studentId;
+        });
+
+        console.log({loggedInStudentData})
+
+        const loggedInStudentHouse = loggedInStudentData.house;
+        const loggedInStudentLevelInSelectedSkill = loggedInStudentData.level;
+
+        const capableStudents = studentsWithSelectedSkillId
+            .filter(student => {
+                return student.id !== studentId && student.level > loggedInStudentLevelInSelectedSkill; 
+            })
+            .sort((a, b) => {
+                /*
+                Sort logic: 
+
+                Sort by level in the specific skill;
+                If skill level is the same, sort by the students house. Students with the same house as the loggedInStudent
+                should be prioritized.
+                */
+
+                const levelSort = b.level - a.level; // Sort level descending
+                if (levelSort) return levelSort;
+
+                const aHouseEqualsStudentHouse = a.house === loggedInStudentHouse;
+                const bHouseEqualsStudentHouse = b.house === loggedInStudentHouse;
+                if (aHouseEqualsStudentHouse === bHouseEqualsStudentHouse) { // Both have (or don't) the loggedInStudent's house
+                    return 0;
+                }
+
+                if (aHouseEqualsStudentHouse) return -1;
+                if (bHouseEqualsStudentHouse) return 1;
+            });
+            
+        if (capableStudents.length) {
+            return res.send(capableStudents[0]);
+        }
+
+        return res.send({ FACULTY: TRUE });
     });
     
     app.express.get('/faculty', (req, res) => {

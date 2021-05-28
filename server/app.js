@@ -1,10 +1,7 @@
-// import bodyParser from 'body-parser';
-// import { config as loadEnvironmentConfig } from 'dotenv';
+import bodyParser from 'body-parser';
 import express from 'express';
 import { setupEndpoints } from './endpoints.js';
-
-// Load environment variables from .env if possible.
-// loadEnvironmentConfig();
+import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider.js'
 
 export class Application {
     express;
@@ -15,19 +12,16 @@ export class Application {
     httpTerminator;
 
     constructor() {
-        this.dbProvider = {};
+        this.dbProvider = new PostgresDbConnectionProvider();
         this.express = express();
         this.express.use(express.json({ limit: '2mb' }));
-        // this.express.use(bodyParser.urlencoded({ extended: false }))
-        // this.express.use(bodyParser.json());
+        this.express.use(bodyParser.urlencoded({ extended: false }))
+        this.express.use(bodyParser.json());
         setupEndpoints(this);
     }
 
     start() {
-        // const title = `Technip Energies SAM ${this.config.version.name}`;
-        // this.appLogger.info(`Starting ${title}...`);
         this.server = this.express.listen(5000, () => {
-            // this.appLogger.info(`Start ${title} and listen on port ${5000}.`);
             console.log(`Start app and listen on port ${5000}.`);
         });
 

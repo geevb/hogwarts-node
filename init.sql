@@ -51,7 +51,7 @@ CREATE INDEX FK_student_user_id_idx ON Students (user_id);
 
 CREATE TABLE IF NOT EXISTS Student_Skills (
  "id"       int NOT NULL GENERATED ALWAYS AS IDENTITY,
- level      int NOT NULL,
+ level      int NOT NULL DEFAULT 0 CHECK (level >= 0 AND level <= 4),
  student_id int NOT NULL,
  skill_id   int NOT NULL,
  CONSTRAINT PK_student_skills PRIMARY KEY ( "id" ),
