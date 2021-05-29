@@ -1,15 +1,13 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import { Server } from 'http';
 import { setupEndpoints } from './endpoints';
 import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider'
 
 export class Application {
-    express;
-    dbProvider;
-    dbLogger: any;
-    appLogger: any;
-    server: any;
-    httpTerminator: any;
+    public express: express.Express;
+    public readonly dbProvider;
+    private server: Server | undefined;
 
     constructor() {
         this.dbProvider = new PostgresDbConnectionProvider();
@@ -20,7 +18,7 @@ export class Application {
         setupEndpoints(this);
     }
 
-    start() {
+    public start(): void {
         this.server = this.express.listen(5000, () => {
             console.log(`Start app and listen on port ${5000}.`);
         });
@@ -44,27 +42,6 @@ export class Application {
         //         });
         //     });
         // });
-    }
-
-    async stop() {
-        await this.shutdown();
-    }
-
-    async shutdown() {
-        // this.appLogger.info(`Shutdown application...`);
-        // if (this.server && this.httpTerminator) {
-        //     this.appLogger.info('Shutdown HTTP server...');
-        //     await this.httpTerminator.terminate();
-        //     this.appLogger.info(`HTTP server has been successfully closed`);
-        // } else {
-        //     this.appLogger.info('HTTP server was not started');
-        // }
-
-        // this.appLogger.info('Shutdown connections to the database...');
-        // this.dbProvider.end();
-        // this.appLogger.info('Shutdown connections to the database...OK');
-
-        // this.appLogger.info(`Application has been gracefully terminated`);
     }
 }
 

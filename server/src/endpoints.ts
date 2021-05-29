@@ -1,17 +1,17 @@
 import { chooseStudentsHelperForSkill } from './control';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { Application } from 'app';
 
 export function setupEndpoints(application: Application) {
     const app = application;
 
-    app.express.get('/students', async (req: Request, res: Response) => {
+    app.express.get('/students', async (_req: Request, res: Response) => {
         const studentId = 3;
         const skillId = 2;
         return res.send(await chooseStudentsHelperForSkill(app.dbProvider, studentId, skillId));
     });
     
-    app.express.get('/faculty', (req: Request, res: Response) => {
+    app.express.get('/faculty', (_req: Request, res: Response) => {
         const faculty = [
             {
                 id: 1,
@@ -27,7 +27,7 @@ export function setupEndpoints(application: Application) {
         res.send(faculty);
     });
   
-    app.express.get('/skills', (req: Request, res: Response) => {
+    app.express.get('/skills', (_req: Request, res: Response) => {
         const skills = [
             {
                 id: 1,

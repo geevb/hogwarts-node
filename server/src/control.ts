@@ -1,29 +1,41 @@
 import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider'
 
-export const getFacultiesWithSubject = (subjectId: number) => {
-        // pega faculty pra skill
-          // pega skillId, busca subject_id
-          // busca faculties que possuem o subject_id
+export interface IStudentSkills {
+    id: number;
+    name: string;
+    house: string;
+    level: number;
+    skill_id: number;
 }
 
-export const selectMostCapablePerson = (studentId: number, studentsWithSelectedSkillId: any) => {
+export const getFacultiesWithSubject = (subjectId: number) => {
+    // pega faculty pra skill
+    // pega skillId, busca subject_id
+    // busca faculties que possuem o subject_id
+}
+
+export const selectMostCapablePerson = (studentId: number, studentsWithSelectedSkillId: IStudentSkills[]) => {
     if (!studentsWithSelectedSkillId || studentsWithSelectedSkillId.length === 1) { // Only the loggedInStudent has the selected skill
         return { FACULTY: true };
         // return getFacultyWithSkill(skillId);
     }
 
-    const loggedInStudentData = studentsWithSelectedSkillId.find((studentDataAndSkills: any) => { 
+    const loggedInStudentData = studentsWithSelectedSkillId.find((studentDataAndSkills: IStudentSkills) => { 
         return studentDataAndSkills.id === studentId;
     });
+
+    if (!loggedInStudentData) {
+        return;
+    }
 
     const loggedInStudentHouse = loggedInStudentData.house;
     const loggedInStudentLevelInSelectedSkill = loggedInStudentData.level;
 
     const capableStudents = studentsWithSelectedSkillId
-        .filter((student: any) => {
+        .filter((student: IStudentSkills) => {
             return student.id !== studentId && student.level > loggedInStudentLevelInSelectedSkill; 
         })
-        .sort((a: any, b: any) => {
+        .sort((a: IStudentSkills, b: IStudentSkills): number => {
             /*
             Sort logic: 
 
@@ -43,6 +55,8 @@ export const selectMostCapablePerson = (studentId: number, studentsWithSelectedS
 
             if (aHouseEqualsStudentHouse) return -1;
             if (bHouseEqualsStudentHouse) return 1;
+
+            return 0;
         });
         
     if (capableStudents.length) {
@@ -53,7 +67,7 @@ export const selectMostCapablePerson = (studentId: number, studentsWithSelectedS
 };
 
 export const chooseStudentsHelperForSkill = async (dbProvider: PostgresDbConnectionProvider, studentId: number, skillId: number) => {
-    const studentsWithSelectedSkillId = await dbProvider.db.any(`
+    const studentsWithSelectedSkillId: IStudentSkills[] = await dbProvider.db.any(`
         SELECT students.id, students.name, students.house, student_skills.skill_id, student_skills.level
         FROM students
         JOIN student_skills
