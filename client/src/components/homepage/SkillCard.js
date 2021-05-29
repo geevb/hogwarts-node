@@ -9,6 +9,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import GradeIcon from '@material-ui/icons/Grade';
+import IconButton from '@material-ui/core/IconButton';
+import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 
 const muiBaseTheme = createMuiTheme();
 const theme = {
@@ -54,10 +56,20 @@ const theme = {
 
 export const SkillCard = (props) => {
     const {
+        id: skillId,
         title,
         level,
         name,
     } = props;
+
+    const handleBestPersonToAsk = () => {
+        fetch(`/bestPersonToAsk?skillId=${skillId}`)
+            .then(res => res.json())
+            .then(
+                (result) => { console.log({result}) },
+                (error) => { console.log({error}) }
+            );
+    };
 
     return (
         <MuiThemeProvider theme={createMuiTheme(theme)}>
@@ -85,9 +97,14 @@ export const SkillCard = (props) => {
                     </Typography>
 
                     <Divider className={"MuiDivider-root"} light />
-                    
+
                     {[...Array(level)].map(() => <GradeIcon/>)}
                     {`Skill level: ${level || 0}/5`}
+                    
+
+                    <IconButton onClick={handleBestPersonToAsk}>
+                        <LiveHelpIcon />
+                    </IconButton>
                 </CardContent>
             </Card>
         </>

@@ -143,8 +143,6 @@ export default function HomePage() {
       )
   }, [])
 
-
-  console.log({skills})
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -184,9 +182,7 @@ export default function HomePage() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container className={classes.cardsContainer}>
-            {skills.map(skill => 
-                <SkillCard title={skill.title} name={skill.name} level={skill.level}/>
-            )}
+            {skills.map((skill, i) => <SkillCard id={skill.id} title={skill.title} name={skill.name} level={skill.level} key={i}/>)}
         </Container>
         <Container maxWidth="lg" className={classes.container}>
           <Box pt={4}>
