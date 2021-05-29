@@ -4,18 +4,26 @@ import { Application } from 'app';
 import { celebrate } from 'celebrate';
 import { bestPersonToAskSchema } from 'joiSchemas'
 
-export interface IbestPersonToAskRequest {
+export interface IBestPersonToAskRequest {
     skillId: number;
+}
+
+export interface ISubjectSkillLevel {
+    id: number;
+    title: string;
+    level: number;
+    name: string;
 }
 
 export function setupEndpoints(application: Application) {
     const app = application;
     
-    app.express.get('/bestPersonToAsk', 
+    app.express.get(
+        '/bestPersonToAsk', 
         celebrate(bestPersonToAskSchema),
-        async (req: Request<any, any, any, IbestPersonToAskRequest>, res: Response) => {
+        async (req: Request<any, any, any, IBestPersonToAskRequest>, res: Response) => {
             const skillId = req.query.skillId;
-            const studentId = 3;;
+            const studentId = 3;
             return res.send(await chooseStudentsHelperForSkill(app.dbProvider, studentId, skillId));
         }
     );
@@ -36,24 +44,15 @@ export function setupEndpoints(application: Application) {
         res.send(faculty);
     });
   
-    app.express.get('/skills', (_req: Request, res: Response) => {
-        const skills = [
-            {
-                id: 1,
-                title: 'Algebra Skill',
-                subject_id: 1,
-            },
-            {
-                id: 2,
-                title: 'Geometry skill',
-                subject_id: 1,
-            },
-            {
-                id: 3,
-                title: 'Biology Skill',
-                subject_id: 2,
-            }
-        ];
-        res.send(skills);
+    app.express.get('/skills', async (_req: Request, res: Response) => {
+        const studentId = 3;
+        const skills: ISubjectSkillLevel[] = await app.dbProvider.db.any(`
+            SELECT skills.id, skills.title, ss.level, s.name FROM skills
+            JOIN subjects s on s.id = skills.subject_id
+            JOIN student_skills ss on skills.id = ss.skill_id
+            WHERE student_id = ${studentId};
+        `);
+
+        return res.send(skills);
     });
 }

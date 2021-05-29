@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,6 +15,7 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './ListItems';
+import { SkillCard } from './SkillCard'
 
 function Copyright() {
   return (
@@ -108,18 +109,42 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  cardsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  }
 }));
 
 export default function HomePage() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  
+  const [open, setOpen] = useState(true);
+  const handleDrawerOpen = () => { setOpen(true) };
+  const handleDrawerClose = () => { setOpen(false) };
 
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [skills, setSkills] = useState([]);
+
+  useEffect(() => {
+    fetch('/skills')
+      .then(res => res.json())
+      .then(
+        (result) => {
+            console.log({result})
+            setIsLoaded(true);
+            setSkills(result);
+        },
+        (error) => {
+            console.log({error})
+            setIsLoaded(true);
+            setError(error);
+        }
+      )
+  }, [])
+
+
+  console.log({skills})
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -158,6 +183,11 @@ export default function HomePage() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
+        <Container className={classes.cardsContainer}>
+            {skills.map(skill => 
+                <SkillCard title={skill.title} name={skill.name} level={skill.level}/>
+            )}
+        </Container>
         <Container maxWidth="lg" className={classes.container}>
           <Box pt={4}>
             <Copyright />
