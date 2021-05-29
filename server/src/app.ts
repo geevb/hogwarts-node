@@ -3,6 +3,7 @@ import express from 'express';
 import { Server } from 'http';
 import { setupEndpoints } from './endpoints';
 import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider'
+import { errors } from 'celebrate';
 
 export class Application {
     public express: express.Express;
@@ -15,7 +16,9 @@ export class Application {
         this.express.use(express.json({ limit: '2mb' }));
         this.express.use(bodyParser.urlencoded({ extended: false }))
         this.express.use(bodyParser.json());
+        
         setupEndpoints(this);
+        this.express.use(errors());
     }
 
     public start(): void {

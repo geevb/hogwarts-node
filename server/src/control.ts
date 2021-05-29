@@ -8,16 +8,36 @@ export interface IStudentSkills {
     skill_id: number;
 }
 
-export const getFacultiesWithSubject = (subjectId: number) => {
-    // pega faculty pra skill
-    // pega skillId, busca subject_id
-    // busca faculties que possuem o subject_id
+export const getFacultiesWhoTeachesSkill = async (dbProvider: PostgresDbConnectionProvider, skillId: number): Promise<string | null> => {
+    const facultiesWithSelectedSkillId: string[] = await dbProvider.db.any(`
+        SELECT faculties.name FROM faculties
+        JOIN faculty_subjects fs ON faculties.id = fs.faculty_id
+        JOIN skills s ON fs.subject_id = s.subject_id
+        WHERE s.id = ${skillId};
+    `);
+
+    if (facultiesWithSelectedSkillId.length === 0) {
+        return null;
+    }
+
+    return facultiesWithSelectedSkillId[0];
 }
 
-export const selectMostCapablePerson = (studentId: number, studentsWithSelectedSkillId: IStudentSkills[]) => {
+export const getCapableStudentToHelpWithSkill = async (dbProvider: PostgresDbConnectionProvider, studentIdToReceiveHelp: number, skillId: number) => {
+    const studentsWithSelectedSkillId: IStudentSkills[] = await dbProvider.db.any(`
+        SELECT students.id, students.name, students.house, student_skills.skill_id, student_skills.level
+        FROM students
+        JOIN student_skills
+        ON students.id = student_skills.student_id
+        WHERE skill_id = ${skillId};
+    `);
+
+    return selectMostCapableStudent(studentIdToReceiveHelp, studentsWithSelectedSkillId);
+}
+
+export const selectMostCapableStudent = (studentId: number, studentsWithSelectedSkillId: IStudentSkills[]): IStudentSkills | null => {
     if (!studentsWithSelectedSkillId || studentsWithSelectedSkillId.length === 1) { // Only the loggedInStudent has the selected skill
-        return { FACULTY: true };
-        // return getFacultyWithSkill(skillId);
+        return null;
     }
 
     const loggedInStudentData = studentsWithSelectedSkillId.find((studentDataAndSkills: IStudentSkills) => { 
@@ -25,7 +45,7 @@ export const selectMostCapablePerson = (studentId: number, studentsWithSelectedS
     });
 
     if (!loggedInStudentData) {
-        return;
+        throw new Error("Could not get Student data for given student id");
     }
 
     const loggedInStudentHouse = loggedInStudentData.house;
@@ -63,17 +83,16 @@ export const selectMostCapablePerson = (studentId: number, studentsWithSelectedS
         return capableStudents[0];
     }
 
-    return { FACULTY: true };
+    return null;
 };
 
 export const chooseStudentsHelperForSkill = async (dbProvider: PostgresDbConnectionProvider, studentId: number, skillId: number) => {
-    const studentsWithSelectedSkillId: IStudentSkills[] = await dbProvider.db.any(`
-        SELECT students.id, students.name, students.house, student_skills.skill_id, student_skills.level
-        FROM students
-        JOIN student_skills
-        ON students.id = student_skills.student_id
-        WHERE skill_id = ${skillId};
-    `);
+    const capableStudent = await getCapableStudentToHelpWithSkill(dbProvider, studentId, skillId);
+    if (capableStudent) return capableStudent;
 
-    return selectMostCapablePerson(studentId, studentsWithSelectedSkillId);
+    
+    const capableFaculty = await getFacultiesWhoTeachesSkill(dbProvider, skillId);
+    if (capableFaculty) return capableFaculty;
+    
+    return null;
 };
