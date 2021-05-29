@@ -1,42 +1,16 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React from 'react';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
-class App extends Component {
-  state = {
-    data: null,
-  };
+import LoginPage from './components/login/LoginPage';
+import HomePage from './components/homepage/HomePage';
 
-  componentDidMount() {
-    // Call our fetch function below once the component mounts
-    this.callBackendAPI()
-      .then((res) => this.setState({ data: res.express }))
-      .catch((err) => console.log(err));
-  }
-  // Fetches our GET route from the Express server. (Note the route we are fetching matches the GET route from server.js
-  callBackendAPI = async () => {
-    const response = await fetch("/express_backend");
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-    return body;
-  };
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">
-            Welcome to the Sora Full-Stack Coding Challenge
-          </h1>
-        </header>
-        <p className="App-intro">{this.state.data}</p>
-      </div>
-    );
-  }
-}
-
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Switch>
+          <Route exact path="/" component={LoginPage} />
+          <Route path="/home" component={HomePage} />
+      </Switch>
+    </BrowserRouter>
+  );
+};
