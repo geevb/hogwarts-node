@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,15 +11,15 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        SORA Schools
+        Hogwarts Schools
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -59,18 +59,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginPage() {
+  const history = useHistory();
   const classes = useStyles();
 
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authorized, setAuthorized] = useState(false);
 
-  // function validateForm() {
-  //   return email.length > 0 && password.length > 0;
-  // }
+  function validateForm() {
+    return email.length > 0 && password.length > 0;
+  }
 
-  // function handleSubmit(event) {
-  //   event.preventDefault();
-  // }
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!authorized) {
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email,password })
+      })
+      .then(resp => resp.json())
+      .then(({ token }) => { Cookies.set('jwt', token); setAuthorized(true) })
+      .catch(error => { console.log(error); setAuthorized(false) });
+    }
+
+    if (authorized) {
+      history.push('home');
+    }
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -95,6 +112,7 @@ export default function LoginPage() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -106,12 +124,13 @@ export default function LoginPage() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Link to="/home">
+            {/* <Link to="/home">
               <Button
                 fullWidth
                 variant="contained"
@@ -120,16 +139,18 @@ export default function LoginPage() {
               >
                 Sign In
               </Button>
-            </Link>
-            {/* <Button
+            </Link> */}
+            <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={!validateForm()}
+              onClick={handleSubmit}
             >
               Sign In
-            </Button> */}
+            </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

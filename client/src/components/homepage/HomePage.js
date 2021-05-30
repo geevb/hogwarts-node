@@ -15,14 +15,16 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './ListItems';
-import { SkillCard } from './SkillCard'
+import { SkillCard } from './SkillCard';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Hogwarts Schools
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -118,29 +120,18 @@ const useStyles = makeStyles((theme) => ({
 export default function HomePage() {
   const classes = useStyles();
   
+  const [skills, setSkills] = useState([]);
   const [open, setOpen] = useState(true);
   const handleDrawerOpen = () => { setOpen(true) };
   const handleDrawerClose = () => { setOpen(false) };
 
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [skills, setSkills] = useState([]);
-
   useEffect(() => {
-    fetch('/skills')
-      .then(res => res.json())
-      .then(
-        (result) => {
-            console.log({result})
-            setIsLoaded(true);
-            setSkills(result);
-        },
-        (error) => {
-            console.log({error})
-            setIsLoaded(true);
-            setError(error);
-        }
-      )
+    axios.get('/skills', {
+      headers: { 'Authorization': `Bearer ${Cookies.get('jwt')}` }
+    })
+    .then(({data = []}) => {
+      setSkills(data);
+    });
   }, [])
 
   return (
@@ -182,7 +173,9 @@ export default function HomePage() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container className={classes.cardsContainer}>
-            {skills.map((skill, i) => <SkillCard id={skill.id} title={skill.title} name={skill.name} level={skill.level} key={i}/>)}
+          {skills.map((skill, i) => 
+            <SkillCard id={skill.id} title={skill.title} name={skill.name} level={skill.level} key={i}/>
+          )}
         </Container>
         <Container maxWidth="lg" className={classes.container}>
           <Box pt={4}>

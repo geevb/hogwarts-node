@@ -2,7 +2,7 @@ import { FacultiesModel } from 'models/FacultiesModel';
 import { StudentsModel } from 'models/StudentsModel';
 
 export interface IStudentSkills {
-    id: number;
+    student_id: number;
     name: string;
     house: string;
     level: number;
@@ -14,9 +14,9 @@ export default class StudentsController {
         if (!studentsWithSelectedSkillId || studentsWithSelectedSkillId.length === 1) { // Only the loggedInStudent has the selected skill
             return null;
         }
-    
+
         const loggedInStudentData = studentsWithSelectedSkillId.find((studentDataAndSkills: IStudentSkills) => { 
-            return studentDataAndSkills.id === studentId;
+            return studentDataAndSkills.student_id === studentId;
         });
     
         if (!loggedInStudentData) {
@@ -26,9 +26,9 @@ export default class StudentsController {
         const loggedInStudentHouse = loggedInStudentData.house;
         const loggedInStudentLevelInSelectedSkill = loggedInStudentData.level;
     
-        const capableStudents = studentsWithSelectedSkillId
+        const [capableStudent] = studentsWithSelectedSkillId
             .filter((student: IStudentSkills) => {
-                return student.id !== studentId && student.level > loggedInStudentLevelInSelectedSkill; 
+                return student.student_id !== studentId && student.level > loggedInStudentLevelInSelectedSkill; 
             })
             .sort((a: IStudentSkills, b: IStudentSkills): number => {
                 /*
@@ -54,8 +54,8 @@ export default class StudentsController {
                 return 0;
             });
             
-        if (capableStudents.length) {
-            return capableStudents[0];
+        if (capableStudent) {
+            return capableStudent;
         }
     
         return null;

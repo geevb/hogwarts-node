@@ -13,7 +13,7 @@ import { StudentsModel } from 'models/StudentsModel';
 const mustAuth = requireAuth();
 
 interface IBestPersonToAskRequest {
-    skillId: number;
+    skillId?: number;
 };
 
 interface IUserLoginCredentialsRequest {
@@ -65,11 +65,15 @@ export function setupEndpoints(application: Application) {
     );
     
     app.express.get(
-        '/bestPersonToAsk', 
+        '/bestPersonToAsk',
+        mustAuth,
         celebrate(bestPersonToAskSchema),
-        async (req: Request<any, any, any, IBestPersonToAskRequest>, res: Response) => {
-            const skillId = req.query.skillId;
-            const studentId = 3;
+        async (req: Request, res: Response) => {
+            const { studentId } = req.user as IUserRequest;
+            const { skillId } = req.query as IBestPersonToAskRequest;
+            if (!skillId || !studentId) { 
+                return res.status(403).send({ message: 'Forbidden' }); 
+            }
 
             const userController = new StudentsController();
             const selectMostCapableStudent = await userController.chooseStudentsHelperForSkill(studentId, skillId);
