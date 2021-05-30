@@ -23,7 +23,7 @@ const config: IPostgresTimeseriesStoreParams = {
 const initOptions = {
     connect() { console.log('Postgres connection initiated') },
     error(err: Error) {
-        console.error('PostgreSQL error', { error: err, callstack: new Error().stack });
+        console.error(JSON.stringify({ origin:'PostgreSQL', error: err, callstack: new Error().stack }));
     },
 };
 

@@ -35,6 +35,10 @@ const useStyles = makeStyles({
 });
 
 export function SkillCard(props) {
+  const CARD_SKILL_SUBJECT_IMAGE = {
+    'Potions': 'potions.jpg',
+    'Transfiguration': 'transfiguration.jpg'
+  };
   const {
     id,
     title,
@@ -59,7 +63,7 @@ export function SkillCard(props) {
     <Card className={classes.root}>
         <CardMedia
           className={classes.media}
-          image="/static/images/cards/contemplative-reptile.jpg"
+          image={CARD_SKILL_SUBJECT_IMAGE[name]}
         />
         <CardContent>
           <Typography className={classes.skillTitle} gutterBottom variant="h5" component="h2">
