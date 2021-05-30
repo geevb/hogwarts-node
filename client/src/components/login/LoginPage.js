@@ -62,16 +62,14 @@ export default function LoginPage() {
   const history = useHistory();
   const classes = useStyles();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [authorized, setAuthorized] = useState(false);
 
-  function validateForm() {
-    return email.length > 0 && password.length > 0;
-  }
+  const validateForm = () => email.length > 0 && password.length > 0;
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     if (!authorized) {
       fetch('/login', {
@@ -130,16 +128,6 @@ export default function LoginPage() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            {/* <Link to="/home">
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Sign In
-              </Button>
-            </Link> */}
             <Button
               type="submit"
               fullWidth
