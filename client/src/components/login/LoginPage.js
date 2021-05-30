@@ -32,11 +32,10 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    backgroundImage: 'url(https://i0.wp.com/soraschools.com/wp-content/uploads/2021/03/Illustration1.png?w=1405&ssl=1)',
-    backgroundRepeat: 'no-repeat',
+    backgroundImage: 'url(/hogwarts.jpg)',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
+    backgroundSize: 'auto',
     backgroundPosition: 'center',
   },
   paper: {
