@@ -1,17 +1,13 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import { Server } from 'http';
-import { setupEndpoints } from './endpoints';
-import { PostgresDbConnectionProvider } from './storage/postgresDbConnectionProvider'
+import { setupEndpoints } from './controllers/endpoints';
 import { errors } from 'celebrate';
 
 export class Application {
     public express: express.Express;
-    public readonly dbProvider;
     private server: Server | undefined;
-
     constructor() {
-        this.dbProvider = new PostgresDbConnectionProvider();
         this.express = express();
         this.express.use(express.json({ limit: '2mb' }));
         this.express.use(bodyParser.urlencoded({ extended: false }))

@@ -7,8 +7,7 @@
   "scripts": {
     "test": "jest --config jest.config.js",
     "test:integration": "jest --config jest.integrationtests.config.js",
-    "start": "node index.js",
-    "startts": "node -r ts-node/register -r tsconfig-paths/register index.ts",
+    "start": "node -r ts-node/register -r tsconfig-paths/register index.ts",
     "precommit": "echo 'Run & apply on-commit cool linter rules here!'"
   },
   "repository": {
@@ -22,15 +21,19 @@
   },
   "homepage": "https://github.com/Master-Smiley/sora-full-stack-challenge#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "celebrate": "^14.0.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "pg-promise": "^10.10.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.12",
     "@types/jest": "^26.0.23",
+    "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^15.6.1",
     "husky": "^4.3.0",
     "jest": "^27.0.1",

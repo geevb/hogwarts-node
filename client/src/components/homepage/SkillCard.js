@@ -56,14 +56,14 @@ const theme = {
 
 export const SkillCard = (props) => {
     const {
-        id: skillId,
+        id,
         title,
         level,
         name,
     } = props;
 
     const handleBestPersonToAsk = () => {
-        fetch(`/bestPersonToAsk?skillId=${skillId}`)
+        fetch(`/bestPersonToAsk?skillId=${id}`)
             .then(res => res.json())
             .then(
                 (result) => { console.log({result}) },
