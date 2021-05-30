@@ -39,7 +39,7 @@ export function SkillCard(props) {
     'Potions': 'potions.jpg',
     'Transfiguration': 'transfiguration.jpg'
   };
-  
+
   const {
     id,
     title,
@@ -53,8 +53,10 @@ export function SkillCard(props) {
         params: { skillId: id },
         headers: { 'Authorization': `Bearer ${Cookies.get('jwt')}` }
       })
-      .then((res) => { 
-        setTooltipTitle(`Doubts? Please refer to: ${res.data.name}`);
+      .then(({ data }) => {
+        if (data.name) {
+          setTooltipTitle(`Doubts? Please refer to: ${data.name}`);
+        }
       })
       .catch((error) => { console.error(error) });
   };
@@ -75,7 +77,7 @@ export function SkillCard(props) {
           </Typography>
           <Divider className={classes.divider} light />
           <div className={classes.stars}>
-            {[...Array(level)].map(() => <GradeIcon/>)}
+            {[...Array(level).keys()].map((i) => <GradeIcon key={i}/>)}
           </div>
           <Typography variant="body2" color="textSecondary" component="p">
             {`Your skill level: ${level}/4`}
