@@ -6,21 +6,27 @@ import { PasswordManager } from './PasswordManager';
 import { UsersModel } from 'models/UsersModel';
 import StudentsController from 'controllers/StudentsController'
 import { SkillsModel } from 'models/SkillsModel';
+import { JWTManager } from './JWTManager';
 
-export interface IBestPersonToAskRequest {
+import requireAuth from './auth';
+import { StudentsModel } from 'models/StudentsModel';
+const mustAuth = requireAuth();
+
+interface IBestPersonToAskRequest {
     skillId: number;
-}
+};
 
-export interface ISubjectSkillLevel {
-    id: number;
-    title: string;
-    level: number;
-    name: string;
-}
-
-export interface IUserLoginCredentials {
+interface IUserLoginCredentialsRequest {
     email: string;
     password: string;
+};
+
+interface IUserRequest { 
+    userId: number;
+    iat: number; 
+    exp: number;
+    studentId?: number;
+    facultyId?: number;
 }
 
 export function setupEndpoints(application: Application) {
@@ -30,19 +36,31 @@ export function setupEndpoints(application: Application) {
         '/login',
         celebrate(loginSchema),
         async (req, res) => {
-            const { email, password } = req.body as IUserLoginCredentials;
+            const { email, password } = req.body as IUserLoginCredentialsRequest;
 
             const userModel = new UsersModel();
-            const user = await userModel.findUserEmail(email);
+            const user = await userModel.getUserByEmail(email);
 
             const passwordManager = new PasswordManager();
             if (!user || !passwordManager.comparePassword(user.password, password)) {
-                return res.status(400).json({ error: 'Invalid credentials' });
+                return res.status(401).json({ error: 'Invalid credentials' });
             }
-        
-            // const token = jwtHandler.generateToken(result.user.id);
-        
-            return res.status(200).json({ k: true });
+
+            const jwtManager = new JWTManager();
+            if (user.role === 'student') {
+                const studentModel = new StudentsModel();
+                const student = await studentModel.getStudentByUserId(user.user_id);
+                if (student) {
+                    const token = jwtManager.generateStudentToken(user.user_id, student.student_id);
+                    return res.send({ token });
+                }
+            }
+
+            if (user.role === 'faculty') {
+                // TODO
+            }
+                
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
     );
     
@@ -62,8 +80,12 @@ export function setupEndpoints(application: Application) {
   
     app.express.get(
         '/skills',
-        async (_req: Request, res: Response) => {
-            const studentId = 3;
+        mustAuth,
+        async (req: Request, res: Response) => {
+            const { studentId } = req.user as IUserRequest;
+            if (!studentId) {
+                return res.status(403).send({ message: 'Forbidden' });
+            }
 
             const skillsModel = new SkillsModel();
             const studentSkills = await skillsModel.getStudentsSkills(studentId);

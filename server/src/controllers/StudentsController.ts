@@ -63,7 +63,7 @@ export default class StudentsController {
 
     public chooseStudentsHelperForSkill = async (studentId: number, skillId: number) => {
         const modelStudents = new StudentsModel();
-        const studentsWithSkill = await modelStudents.getStudentsWithSkill(studentId, skillId);
+        const studentsWithSkill = await modelStudents.getStudentsWithSkill(skillId);
         const capableStudent = this.selectMostCapableStudent(studentId, studentsWithSkill);
         if (capableStudent) return capableStudent;
     

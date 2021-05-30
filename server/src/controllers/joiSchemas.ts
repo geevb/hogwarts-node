@@ -2,7 +2,7 @@ import { Joi, Segments } from 'celebrate';
 
 export const loginSchema = {
     [Segments.BODY]: {
-        username: Joi.string().email().required(),
+        email: Joi.string().email().required(),
         password: Joi.string().required()
     }
 };

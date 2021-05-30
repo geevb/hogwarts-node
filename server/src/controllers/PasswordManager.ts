@@ -5,7 +5,7 @@ export class PasswordManager {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
     };
 
-    public comparePassword(hashPassword: string, password: string) {
-        return bcrypt.compareSync(password, hashPassword);
+    public comparePassword(hashedPassword: string, password: string) {
+        return bcrypt.compareSync(password, hashedPassword);
     };
 };

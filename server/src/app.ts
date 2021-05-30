@@ -18,9 +18,13 @@ export class Application {
     }
 
     public start(): void {
-        this.server = this.express.listen(5000, () => {
-            console.log(`Start app and listen on port ${5000}.`);
-        });
+        try {
+            this.server = this.express.listen(5000, () => {
+                console.log(`Start app and listen on port ${5000}.`);
+            });
+        } catch (error) {
+            console.log(error);
+        }
 
         // const signals = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
         // signals.forEach(sig => {

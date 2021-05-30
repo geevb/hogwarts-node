@@ -3,7 +3,7 @@ CREATE TYPE user_roles AS ENUM('student', 'faculty');
 CREATE TABLE IF NOT EXISTS Users (
  "id"       int NOT NULL GENERATED ALWAYS AS IDENTITY,
  email      varchar(50) UNIQUE NOT NULL,
- password   varchar(50) NOT NULL,
+ password   varchar(200) NOT NULL,
  role       user_roles  NOT NULL,
  created_at date NOT NULL DEFAULT NOW(),
  CONSTRAINT PK_user PRIMARY KEY ( "id" )

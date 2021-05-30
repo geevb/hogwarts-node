@@ -1,5 +1,4 @@
 import PostgresDbConnectionProvider from './postgresDbConnectionProvider';
-import { IStudentSkills } from '../controllers/StudentsController';
 
 export class FacultiesModel {
     private readonly dbProvider;
@@ -13,8 +12,8 @@ export class FacultiesModel {
             FROM faculties
             JOIN faculty_subjects fs ON faculties.id = fs.faculty_id
             JOIN skills s ON fs.subject_id = s.subject_id
-            WHERE s.id = ${skillId};
-        `);
+            WHERE s.id = $1;
+        `, skillId);
     
         if (facultiesWithSelectedSkillId.length === 0) {
             return null;
