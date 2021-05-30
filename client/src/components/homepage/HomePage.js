@@ -114,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
   cardsContainer: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
   }
 }));
 

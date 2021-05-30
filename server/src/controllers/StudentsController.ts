@@ -9,6 +9,10 @@ export interface IStudentSkills {
     skill_id: number;
 }
 
+interface IStudentHelper {
+    name: string;
+}
+
 export default class StudentsController {
     public selectMostCapableStudent = (studentId: number, studentsWithSelectedSkillId: IStudentSkills[]): IStudentSkills | null => {
         if (!studentsWithSelectedSkillId || studentsWithSelectedSkillId.length === 1) { // Only the loggedInStudent has the selected skill
@@ -61,7 +65,7 @@ export default class StudentsController {
         return null;
     };
 
-    public chooseStudentsHelperForSkill = async (studentId: number, skillId: number) => {
+    public chooseStudentsHelperForSkill = async (studentId: number, skillId: number): Promise<IStudentHelper | null> => {
         const modelStudents = new StudentsModel();
         const studentsWithSkill = await modelStudents.getStudentsWithSkill(skillId);
         const capableStudent = this.selectMostCapableStudent(studentId, studentsWithSkill);

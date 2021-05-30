@@ -1,13 +1,17 @@
 import PostgresDbConnectionProvider from './postgresDbConnectionProvider';
 
+interface IFacultyModel {
+    name: string;
+}
+
 export class FacultiesModel {
     private readonly dbProvider;
     constructor() {
         this.dbProvider = PostgresDbConnectionProvider;
     }
 
-    public getFacultiesWhoTeachesSkill = async (skillId: number): Promise<string[] | null> => {
-        const facultiesWithSelectedSkillId: string[] = await this.dbProvider.any(`
+    public getFacultiesWhoTeachesSkill = async (skillId: number): Promise<IFacultyModel[] | null> => {
+        const facultiesWithSelectedSkillId: IFacultyModel[] = await this.dbProvider.any(`
             SELECT faculties.name 
             FROM faculties
             JOIN faculty_subjects fs ON faculties.id = fs.faculty_id

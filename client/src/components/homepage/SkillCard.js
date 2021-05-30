@@ -39,6 +39,7 @@ export function SkillCard(props) {
     'Potions': 'potions.jpg',
     'Transfiguration': 'transfiguration.jpg'
   };
+  
   const {
     id,
     title,
