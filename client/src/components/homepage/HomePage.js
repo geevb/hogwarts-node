@@ -15,7 +15,7 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './ListItems';
-import { SkillCard } from './SkillCard';
+import { SkillCardContainer } from './SkillCardsContainer';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -120,20 +120,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function HomePage() {
   const classes = useStyles();
-  
-  const [skills, setSkills] = useState([]);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => { setOpen(true) };
   const handleDrawerClose = () => { setOpen(false) };
-
-  useEffect(() => {
-    axios.get('/skills', {
-      headers: { 'Authorization': `Bearer ${Cookies.get('jwt')}` }
-    })
-    .then(({data = []}) => {
-      setSkills(data);
-    });
-  }, [])
 
   return (
     <div className={classes.root}>
@@ -173,11 +162,7 @@ export default function HomePage() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container className={classes.cardsContainer}>
-          {skills.map((skill, i) => 
-            <SkillCard id={skill.id} title={skill.title} name={skill.name} level={skill.level} key={i}/>
-          )}
-        </Container>
+        <SkillCardContainer/>
         <Container maxWidth="lg" className={classes.container}>
           <Box pt={4}>
             <Copyright />

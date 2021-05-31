@@ -14,14 +14,14 @@ import axios from 'axios';
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    minWidth: 250,
     margin: 25
   },
   media: {
     height: 140,
   },
   skillTitle: {
-    width: 250
+    width: 250,
   },
   divider: {
     marginTop: 5,

@@ -169,6 +169,8 @@ insert into student_skills (level, student_id, skill_id) values (4, 2, 3);
 insert into student_skills (level, student_id, skill_id) values (1, 3, 2);
 insert into student_skills (level, student_id, skill_id) values (1, 3, 3);
 insert into student_skills (level, student_id, skill_id) values (2, 3, 4);
+insert into student_skills (level, student_id, skill_id) values (4, 3, 1);
+insert into student_skills (level, student_id, skill_id) values (0, 3, 5);
 
 
 --- Draco
