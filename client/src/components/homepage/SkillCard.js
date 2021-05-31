@@ -6,6 +6,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import GradeIcon from '@material-ui/icons/Grade';
+import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import IconButton from '@material-ui/core/IconButton';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import Tooltip from '@material-ui/core/Tooltip'
@@ -37,7 +38,8 @@ const useStyles = makeStyles({
 export function SkillCard(props) {
   const CARD_SKILL_SUBJECT_IMAGE = {
     'Potions': 'potions.jpg',
-    'Transfiguration': 'transfiguration.jpg'
+    'Transfiguration': 'transfiguration.jpg',
+    'Defence Against the Dark Arts': 'hippogriff.jpg'
   };
 
   const {
@@ -77,7 +79,11 @@ export function SkillCard(props) {
           </Typography>
           <Divider className={classes.divider} light />
           <div className={classes.stars}>
-            {[...Array(level).keys()].map((i) => <GradeIcon key={i}/>)}
+            {
+              level 
+                ? [...Array(level).keys()].map((i) => <GradeIcon key={i}/>)
+                : <StarOutlineIcon/>
+            }
           </div>
           <Typography variant="body2" color="textSecondary" component="p">
             {`Your skill level: ${level}/4`}
