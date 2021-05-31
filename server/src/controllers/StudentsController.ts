@@ -32,15 +32,17 @@ export default class StudentsController {
     
         const [capableStudent] = studentsWithSelectedSkillId
             .filter((student: IStudentSkills) => {
-                return student.student_id !== studentId && student.level > loggedInStudentLevelInSelectedSkill; 
+                return student.student_id !== studentId
+                    && student.level > loggedInStudentLevelInSelectedSkill
+                    && student.level >= 3;
             })
             .sort((a: IStudentSkills, b: IStudentSkills): number => {
                 /*
                 Sort logic: 
     
                 Sort by level in the specific skill;
-                If skill level is the same, sort by the students house. Students with the same house as the loggedInStudent
-                should be prioritized.
+                If skill level is the same, sort by the students house. 
+                Students with the same house as the loggedInStudent should be prioritized.
                 */
     
                 const levelSort = b.level - a.level; // Sort level descending
