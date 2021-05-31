@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import { Application } from 'app';
 import { celebrate } from 'celebrate';
 import { bestPersonToAskSchema, loginSchema } from './joiSchemas'
-import { PasswordManager } from './PasswordManager';
 import { UsersModel } from 'models/UsersModel';
-import StudentsController from 'controllers/StudentsController'
 import { SkillsModel } from 'models/SkillsModel';
-import { JWTManager } from './JWTManager';
 import { StudentsModel } from 'models/StudentsModel';
 
+import StudentsController from 'controllers/StudentsController'
+import JWTManager from './JWTManager';
+import PasswordManager from './PasswordManager';
 import requireAuth from '../middlewares/auth';
 const mustAuth = requireAuth();
 

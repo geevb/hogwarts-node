@@ -24,7 +24,7 @@ export default class StudentsController {
         });
     
         if (!loggedInStudentData) {
-            throw new Error("Could not get Student data for given student id");
+            throw new Error('Could not get Student data for given student id');
         }
     
         const loggedInStudentHouse = loggedInStudentData.house;
