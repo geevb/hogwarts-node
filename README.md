@@ -23,22 +23,28 @@ We'll be examining the app's logic as well as its design and user experience. We
 
 ### Getting Started
 
-Fork this repo. Then:
+To run the app:
+
+Install dependencies:
 
 ```bash
-npm install
+yarn install
 ```
 
-To run react app:
+Fireup the database:
 
 ```bash
-cd client & npm start
+docker-compose up
 ```
 
-To run express server:
+Run express server:
 
 ```bash
-node server.js
+cd server/ && yarn start
 ```
 
-Feel free to use the scaffold code or completely disregard it! It's only there to make your life easier. A good place to start would be the routes in the 'server.js' file.
+Run react app:
+
+```bash
+cd client && yarn start
+```
