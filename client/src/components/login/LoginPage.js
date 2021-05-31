@@ -3,23 +3,23 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, withRouter } from 'react-router-dom';
+import HomePage from '../homepage/HomePage'
 import Cookies from 'js-cookie';
+
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Hogwarts Schools
+      <Link color="inherit">
+        Hogwarts School
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.info.dark,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -56,6 +56,11 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  incorrectCredentials: {
+    textAlign: 'center',
+    fontSize: 15,
+    color: 'red',
+  }
 }));
 
 export default function LoginPage() {
@@ -64,27 +69,34 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(true);
 
   const validateForm = () => email.length > 0 && password.length > 0;
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!authorized) {
-      fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email,password })
-      })
-      .then(resp => resp.json())
-      .then(({ token }) => { Cookies.set('jwt', token); setAuthorized(true) })
-      .catch(error => { console.log(error); setAuthorized(false) });
-    }
-
-    if (authorized) {
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email,password })
+    })
+    .then(resp => resp.json())
+    .then((data) => {
+      if (data.error) {
+        return setAuthorized(false);
+      }
+      
+      Cookies.set('jwt', data.token); 
+      setAuthorized(true);
+      withRouter(HomePage);
       history.push('home');
-    }
+    })
+    .catch(error => { 
+      console.log(error);
+      setAuthorized(false) 
+    });
+    
   }
 
   return (
@@ -124,10 +136,13 @@ export default function LoginPage() {
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            {
+              authorized === false
+                ?   <Typography className={classes.incorrectCredentials} component="h1" variant="h6">
+                      Invalid credentials
+                    </Typography>
+                : null
+            }
             <Button
               type="submit"
               fullWidth
@@ -139,18 +154,6 @@ export default function LoginPage() {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
             <Box mt={5}>
               <Copyright />
             </Box>

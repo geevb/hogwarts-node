@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import helmet from 'helmet';
 import { Server } from 'http';
 import { setupEndpoints } from './controllers/endpoints';
 import { errors } from 'celebrate';
@@ -12,6 +13,7 @@ export class Application {
         this.express.use(express.json({ limit: '2mb' }));
         this.express.use(bodyParser.urlencoded({ extended: false }))
         this.express.use(bodyParser.json());
+        this.express.use(helmet());
         
         setupEndpoints(this);
         this.express.use(errors());
@@ -25,26 +27,6 @@ export class Application {
         } catch (error) {
             console.log(error);
         }
-
-        // const signals = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
-        // signals.forEach(sig => {
-        //     process.on(sig, async () => {
-        //         this.appLogger.info(`Received signal ${sig}. Shutdown application`);
-
-        //         if (this.params && this.params.onProcessShutdown) {
-        //             try {
-        //                 this.appLogger.info('Call onProcessShutdown function');
-        //                 await this.params.onProcessShutdown(this.appLogger);
-        //             } catch (error) {
-        //                 this.appLogger.error('Error occurred executing shutdown handled', error);
-        //             }
-        //         }
-        //         this.shutdown().then(() => {
-        //             this.appLogger.info('Shutdown completed');
-        //             process.exit(0);
-        //         });
-        //     });
-        // });
     }
 }
 
