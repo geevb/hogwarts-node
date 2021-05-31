@@ -9,6 +9,7 @@
         "outDir": "build/",
         "skipLibCheck": true,
         "inlineSourceMap": true,
+        "types": ["jest", "node"]
     },
-    "exclude": ["node_modules", "tests"]
+    "exclude": ["node_modules"]
 }

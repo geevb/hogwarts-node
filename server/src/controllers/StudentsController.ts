@@ -1,5 +1,5 @@
-import { FacultiesModel } from 'models/FacultiesModel';
-import { StudentsModel } from 'models/StudentsModel';
+import { FacultiesModel } from '../models/FacultiesModel';
+import { StudentsModel } from '../models/StudentsModel';
 
 export interface IStudentSkills {
     student_id: number;

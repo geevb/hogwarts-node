@@ -7,9 +7,9 @@ import { UsersModel } from 'models/UsersModel';
 import StudentsController from 'controllers/StudentsController'
 import { SkillsModel } from 'models/SkillsModel';
 import { JWTManager } from './JWTManager';
-
-import requireAuth from './auth';
 import { StudentsModel } from 'models/StudentsModel';
+
+import requireAuth from '../middlewares/auth';
 const mustAuth = requireAuth();
 
 interface IBestPersonToAskRequest {
