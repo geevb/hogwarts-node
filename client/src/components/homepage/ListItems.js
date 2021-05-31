@@ -8,13 +8,13 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export const mainListItems = (
   <div>
-    <ListItem button>
+    <ListItem button style={{paddingLeft: 24}}>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItem>
-    <ListItem button>
+    <ListItem button style={{paddingLeft: 24}}>
       <ListItemIcon>
         <PersonIcon />
       </ListItemIcon>
@@ -25,7 +25,7 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <div>
-    <ListItem button>
+    <ListItem button style={{paddingLeft: 24}}>
       <ListItemIcon>
         <ExitToAppIcon />
       </ListItemIcon>

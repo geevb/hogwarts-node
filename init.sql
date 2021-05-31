@@ -114,13 +114,13 @@ insert into students (name, house, user_id) values ('Luna Lovegood', 'Ravenclaw'
 
 
 --- ADD FACULTIES
-insert into users (email, password, role) values ('minerva.mcgonagall@email.com', '123', 'faculty');
+insert into users (email, password, role) values ('minerva.mcgonagall@email.com', '$2b$08$hv4PUlOOd83ITXddBoa.2usetZ3PK8KR4LrB1XsBRVv4LrnRYbAUa', 'faculty');
 insert into faculties (name, user_id) values ('Minerva McGonagall', 7);
 
-insert into users (email, password, role) values ('severus.snape@email.com', '123', 'faculty');
+insert into users (email, password, role) values ('severus.snape@email.com', '$2b$08$hv4PUlOOd83ITXddBoa.2usetZ3PK8KR4LrB1XsBRVv4LrnRYbAUa', 'faculty');
 insert into faculties (name, user_id) values ('Severus Snape', 8);
 
-insert into users (email, password, role) values ('remo.lupin@email.com', '123', 'faculty');
+insert into users (email, password, role) values ('remo.lupin@email.com', '$2b$08$hv4PUlOOd83ITXddBoa.2usetZ3PK8KR4LrB1XsBRVv4LrnRYbAUa', 'faculty');
 insert into faculties (name, user_id) values ('Remo Lupin', 9);
 
 
